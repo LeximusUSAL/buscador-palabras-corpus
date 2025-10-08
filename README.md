@@ -73,14 +73,14 @@ NOMBRE_BUSQUEDA = "Ejemplo"  # ← Cambia esto por el nombre de tu búsqueda
 
 3. **Reemplaza** las palabras de ejemplo con las palabras que quieres buscar:
 
-**Ejemplo 1: Buscar "Benedito"**
+**Ejemplo 1: Buscar "Falla"**
 ```python
 PALABRAS_CLAVE = [
-    "Benedito",
-    "Beneditto",
+    "Falla",
+    "de Falla",
 ]
 
-NOMBRE_BUSQUEDA = "Benedito"
+NOMBRE_BUSQUEDA = "Falla"
 ```
 
 **Ejemplo 2: Buscar "feminismo"**
@@ -161,8 +161,8 @@ El programa genera **dos archivos**:
 🔍 ANÁLISIS COMPLETADO
 ================================================================================
 📄 Total archivos: 250
-✅ Archivos con 'Benedito': 45 (18%)
-❌ Archivos sin 'Benedito': 205 (82%)
+✅ Archivos con 'Falla': 45 (18%)
+❌ Archivos sin 'Falla': 205 (82%)
 📊 Total menciones: 127
 📈 Frecuencia: 12.5 menciones por millón de palabras
 
@@ -248,7 +248,7 @@ python3 -m pip install --upgrade pip
 
 ## 📚 Casos de uso académicos
 
-Este programa fue creado para el proyecto **LexiMus** (Universidad de Salamanca) y se ha usado para:
+Este programa fue creado para el proyecto **LexiMus: Léxico y Ontología de la Música en Español. PID PID2022-139589NB-C33 ** (Universidad de Salamanca) y se ha usado para:
 
 - ✅ Análisis de presencia/ausencia de compositores en revistas musicales
 - ✅ Estudio de frecuencia de términos musicales en prensa histórica
@@ -265,7 +265,7 @@ MIT License - Uso libre para fines académicos y comerciales
 
 ## 👩‍💻 Créditos
 
-**Proyecto**: LexiMus - Léxico y ontología de la música en español
+**Proyecto**: LexiMus - Léxico y ontología de la música en español PID2022-139589NB-C33
 **Instituciones**: Universidad de Salamanca | Instituto Complutense de Ciencias Musicales | Universidad de La Rioja
 **Desarrollado con**: Claude Code (Anthropic)
 
@@ -290,5 +290,3 @@ Si tienes problemas usando el programa:
 - [ ] Interfaz gráfica (sin línea de comandos)
 
 ---
-
-**¡Feliz análisis de corpus!** 📊📚
