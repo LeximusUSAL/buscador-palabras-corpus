@@ -15,9 +15,8 @@ Este programa te permite:
 ✅ **Ver el contexto** donde aparece cada palabra (fragmentos de texto)
 
 **Ejemplo de uso:**
-- Buscar "Benedito" en 500 revistas musicales
+- Buscar "Falla" en 500 revistas musicales
 - Buscar "feminismo" en corpus de prensa histórica
-- Buscar "covid" en documentos científicos
 - Buscar "Mozart" en críticas musicales
 
 ---
