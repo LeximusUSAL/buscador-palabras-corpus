@@ -1,6 +1,6 @@
-# 🔍 Buscador de Palabras Clave en Corpus Textual
+# 🔍 Buscador de Palabra Clave en Corpus Textual
 
-Herramienta sencilla para buscar palabras clave en **corpus masivos de texto**. Genera estadísticas, gráficos interactivos y análisis de frecuencia automáticamente.
+Herramienta sencilla para buscar **una palabra específica** en **corpus masivos de texto**. Genera estadísticas, gráficos interactivos y análisis de frecuencia automáticamente.
 
 ---
 
@@ -8,15 +8,22 @@ Herramienta sencilla para buscar palabras clave en **corpus masivos de texto**. 
 
 Este programa te permite:
 
-✅ **Buscar cualquier palabra** en cientos o miles de archivos de texto
+✅ **Buscar UNA palabra EXACTA** en cientos o miles de archivos de texto
+✅ **Búsqueda sensible a mayúsculas** (distingue "Falla" de "falla")
 ✅ **Contar cuántas veces aparece** la palabra en cada archivo
 ✅ **Generar estadísticas** automáticas (porcentajes, frecuencias, etc.)
 ✅ **Crear una página web interactiva** con gráficos y tablas
 ✅ **Ver el contexto** donde aparece cada palabra (fragmentos de texto)
 
+**Características importantes:**
+- ⚠️ **Solo busca UNA palabra a la vez** (no variantes ni plurales)
+- ⚠️ **Sensible a mayúsculas**: "Mozart" ≠ "mozart"
+- ✅ **Busca palabras completas**: "Falla" NO coincidirá con "fallaba"
+
 **Ejemplo de uso:**
 - Buscar "Falla" en 500 revistas musicales
 - Buscar "feminismo" en corpus de prensa histórica
+- Buscar "COVID-19" en documentos científicos
 - Buscar "Mozart" en críticas musicales
 
 ---
@@ -54,54 +61,39 @@ cd buscador-palabras-corpus
 
 ## 🚀 Cómo usar el programa (paso a paso)
 
-### **PASO 1: Configurar las palabras a buscar**
+### **PASO 1: Configurar la palabra a buscar**
 
 1. Abre el archivo `buscador_palabras_clave.py` con un editor de texto
    (puedes usar el Bloc de notas, TextEdit, Notepad++, etc.)
 
-2. Busca las líneas 23-30 que dicen:
+2. Busca la línea 31 que dice:
 
 ```python
-PALABRAS_CLAVE = [
-    "ejemplo",           # ← Cambia esto por tu palabra clave
-    "ejemplos",          # ← Variante plural (opcional)
-]
-
-NOMBRE_BUSQUEDA = "Ejemplo"  # ← Cambia esto por el nombre de tu búsqueda
+PALABRA_CLAVE = "Ejemplo"  # ← Cambia esto por tu palabra clave EXACTA
 ```
 
-3. **Reemplaza** las palabras de ejemplo con las palabras que quieres buscar:
+3. **Reemplaza** "Ejemplo" con la palabra EXACTA que quieres buscar:
 
-**Ejemplo 1: Buscar "Falla"**
+**Ejemplo 1: Buscar "Falla" (con mayúscula)**
 ```python
-PALABRAS_CLAVE = [
-    "Falla",
-    "de Falla",
-]
-
-NOMBRE_BUSQUEDA = "Falla"
+PALABRA_CLAVE = "Falla"
 ```
 
-**Ejemplo 2: Buscar "feminismo"**
+**Ejemplo 2: Buscar "feminismo" (sin mayúscula)**
 ```python
-PALABRAS_CLAVE = [
-    "feminismo",
-    "feminista",
-    "feministas",
-]
-
-NOMBRE_BUSQUEDA = "Feminismo"
+PALABRA_CLAVE = "feminismo"
 ```
 
 **Ejemplo 3: Buscar "Mozart"**
 ```python
-PALABRAS_CLAVE = [
-    "Mozart",
-    "mozartiano",
-]
-
-NOMBRE_BUSQUEDA = "Mozart"
+PALABRA_CLAVE = "Mozart"
 ```
+
+**⚠️ IMPORTANTE:**
+- La palabra debe ir **entrecomillada**
+- Es **sensible a mayúsculas**: "Falla" ≠ "falla"
+- Solo **una palabra** a la vez (sin comas ni corchetes)
+- NO dejes la palabra vacía: `""` causará errores
 
 4. **Guarda el archivo** después de hacer los cambios
 
@@ -220,28 +212,21 @@ python3 -m pip install --upgrade pip
 
 ## 💡 Consejos
 
-1. **Variantes de palabras**: Puedes incluir plurales, formas verbales, etc.
+1. **Sensibilidad a mayúsculas**: Si quieres buscar tanto "Falla" como "falla", debes ejecutar el script **dos veces** con cada variante
+
+2. **Palabras compuestas**: Escribe exactamente como aparecen en tus textos
    ```python
-   PALABRAS_CLAVE = [
-       "componer",
-       "compuso",
-       "compuesto",
-       "compositor",
-       "compositora",
-   ]
+   PALABRA_CLAVE = "avant-garde"  # Con guion
    ```
 
-2. **Palabras compuestas**: Usa guiones o espacios según aparezcan en tus textos
+3. **Apellidos**: Usa mayúscula inicial para nombres propios
    ```python
-   PALABRAS_CLAVE = [
-       "avant-garde",
-       "avant garde",
-   ]
+   PALABRA_CLAVE = "Beethoven"  # NO "beethoven"
    ```
-
-3. **No distingue mayúsculas**: "Mozart", "mozart" y "MOZART" se consideran iguales
 
 4. **Busca palabras completas**: "arte" NO coincidirá con "artefacto"
+
+5. **Para buscar variantes**: Ejecuta el script múltiples veces cambiando la palabra cada vez
 
 ---
 

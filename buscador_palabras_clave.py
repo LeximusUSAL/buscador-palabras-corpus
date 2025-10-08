@@ -20,21 +20,15 @@ from datetime import datetime
 
 
 # ==========================================================================
-# ⚙️ CONFIGURACIÓN - MODIFICA AQUÍ TUS PALABRAS CLAVE
+# ⚙️ CONFIGURACIÓN - MODIFICA AQUÍ TU PALABRA CLAVE
 # ==========================================================================
 
 # INSTRUCCIONES:
-# 1. Reemplaza las palabras de ejemplo con las palabras que quieras buscar
-# 2. Puedes buscar una sola palabra o múltiples variantes
-# 3. El script NO distingue entre mayúsculas y minúsculas
+# 1. Reemplaza "ejemplo" con la palabra EXACTA que quieras buscar
+# 2. El script buscará EXACTAMENTE esa palabra (sensible a mayúsculas)
+# 3. Solo se permite UNA palabra clave a la vez
 
-PALABRAS_CLAVE = [
-    "ejemplo",           # ← Cambia esto por tu palabra clave
-    "ejemplos",          # ← Variante plural (opcional)
-]
-
-# Nombre descriptivo para tu búsqueda (aparecerá en el título)
-NOMBRE_BUSQUEDA = "Ejemplo"  # ← Cambia esto por el nombre de tu búsqueda
+PALABRA_CLAVE = "Ejemplo"  # ← Cambia esto por tu palabra clave EXACTA
 
 
 # ==========================================================================
@@ -42,32 +36,27 @@ NOMBRE_BUSQUEDA = "Ejemplo"  # ← Cambia esto por el nombre de tu búsqueda
 # ==========================================================================
 
 class BuscadorPalabrasClave:
-    def __init__(self, base_directory, palabras_clave, nombre_busqueda):
+    def __init__(self, base_directory, palabra_clave):
         """
-        Inicializa el buscador de palabras clave
+        Inicializa el buscador de palabra clave
 
         Args:
             base_directory (str): Ruta al directorio con archivos TXT
-            palabras_clave (list): Lista de palabras/términos a buscar
-            nombre_busqueda (str): Nombre descriptivo de la búsqueda
+            palabra_clave (str): Palabra EXACTA a buscar (sensible a mayúsculas)
         """
         self.base_directory = base_directory
-        self.palabras_clave = palabras_clave
-        self.nombre_busqueda = nombre_busqueda
+        self.palabra_clave = palabra_clave
         self.resultados = {}
         self.total_archivos = 0
         self.total_palabras = 0
 
-        # Crear patrones regex para cada palabra clave
+        # Crear patrón regex para la palabra exacta
         # \b = límite de palabra (busca palabras completas, no dentro de otras)
-        self.patrones = [
-            r'\b' + re.escape(palabra) + r'\b'
-            for palabra in palabras_clave
-        ]
+        self.patron = r'\b' + re.escape(palabra_clave) + r'\b'
 
     def buscar_en_texto(self, contenido):
         """
-        Busca todas las apariciones de las palabras clave en un texto
+        Busca todas las apariciones EXACTAS de la palabra clave en un texto
 
         Args:
             contenido (str): Texto a analizar
@@ -75,49 +64,41 @@ class BuscadorPalabrasClave:
         Returns:
             dict: {
                 'total_menciones': int,
-                'menciones_por_variante': dict,
                 'contextos': list (fragmentos de texto donde aparece)
             }
         """
         resultado = {
             'total_menciones': 0,
-            'menciones_por_variante': {},
             'contextos': []
         }
 
-        # Buscar cada patrón
-        for patron in self.patrones:
-            matches = list(re.finditer(patron, contenido, re.IGNORECASE))
+        # Buscar el patrón (sensible a mayúsculas)
+        matches = list(re.finditer(self.patron, contenido))
 
-            for match in matches:
-                variante = match.group(0)
+        for match in matches:
+            palabra_encontrada = match.group(0)
 
-                # Contar por variante
-                if variante.lower() not in resultado['menciones_por_variante']:
-                    resultado['menciones_por_variante'][variante.lower()] = 0
-                resultado['menciones_por_variante'][variante.lower()] += 1
+            # Extraer contexto (100 caracteres antes y después)
+            inicio = max(0, match.start() - 100)
+            fin = min(len(contenido), match.end() + 100)
+            contexto = contenido[inicio:fin].strip()
 
-                # Extraer contexto (100 caracteres antes y después)
-                inicio = max(0, match.start() - 100)
-                fin = min(len(contenido), match.end() + 100)
-                contexto = contenido[inicio:fin].strip()
+            # Limpiar saltos de línea múltiples
+            contexto = re.sub(r'\s+', ' ', contexto)
 
-                # Limpiar saltos de línea múltiples
-                contexto = re.sub(r'\s+', ' ', contexto)
+            resultado['contextos'].append({
+                'texto': contexto,
+                'posicion': match.start(),
+                'palabra': palabra_encontrada
+            })
 
-                resultado['contextos'].append({
-                    'texto': contexto,
-                    'posicion': match.start(),
-                    'variante': variante
-                })
-
-                resultado['total_menciones'] += 1
+            resultado['total_menciones'] += 1
 
         return resultado
 
     def analizar_archivo(self, filepath):
         """
-        Analiza un archivo de texto en busca de las palabras clave
+        Analiza un archivo de texto en busca de la palabra clave
 
         Args:
             filepath (str): Ruta al archivo
@@ -132,7 +113,7 @@ class BuscadorPalabrasClave:
             # Conteo de palabras
             palabras = len(contenido.split())
 
-            # Buscar palabras clave
+            # Buscar palabra clave
             busqueda = self.buscar_en_texto(contenido)
 
             # Construir resultado
@@ -142,7 +123,6 @@ class BuscadorPalabrasClave:
                 'palabras': palabras,
                 'tiene_palabra_clave': busqueda['total_menciones'] > 0,
                 'total_menciones': busqueda['total_menciones'],
-                'menciones_por_variante': busqueda['menciones_por_variante'],
                 'contextos': busqueda['contextos'][:5]  # Máximo 5 contextos por archivo
             }
 
@@ -225,8 +205,7 @@ class BuscadorPalabrasClave:
                 'total_archivos': len(resultados_archivos),
                 'total_palabras': total_palabras,
                 'fecha_analisis': datetime.now().isoformat(),
-                'palabras_buscadas': self.palabras_clave,
-                'nombre_busqueda': self.nombre_busqueda
+                'palabra_buscada': self.palabra_clave
             },
             'resumen_general': {
                 'total_menciones': total_menciones,
@@ -275,15 +254,12 @@ class BuscadorPalabrasClave:
             key=lambda x: x['archivo']
         )
 
-        # Escapar comillas para JavaScript
-        palabras_str = ', '.join([f'"{p}"' for p in meta['palabras_buscadas']])
-
         html_content = f"""<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Análisis de "{meta['nombre_busqueda']}" en Corpus Textual</title>
+    <title>Análisis de "{meta['palabra_buscada']}" en Corpus Textual</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * {{
@@ -524,11 +500,11 @@ class BuscadorPalabrasClave:
 </head>
 <body>
     <div class="container">
-        <h1>🔍 Análisis de "{meta['nombre_busqueda']}" en Corpus Textual</h1>
+        <h1>🔍 Análisis de "{meta['palabra_buscada']}" en Corpus Textual</h1>
         <p class="subtitle">Proyecto LexiMus - Universidad de Salamanca</p>
 
         <div class="palabras-buscadas">
-            <strong>🔎 Palabras buscadas:</strong> {', '.join(meta['palabras_buscadas'])}
+            <strong>🔎 Palabra buscada:</strong> "{meta['palabra_buscada']}" (búsqueda EXACTA)
         </div>
 
         <div class="stats-grid">
@@ -538,12 +514,12 @@ class BuscadorPalabrasClave:
                 <div>{meta['total_palabras']:,} palabras</div>
             </div>
             <div class="stat-card">
-                <h3>✅ Con "{meta['nombre_busqueda']}"</h3>
+                <h3>✅ Con "{meta['palabra_buscada']}"</h3>
                 <div class="number">{resumen['archivos_con_palabra']}</div>
                 <div>{resumen['porcentaje_con_palabra']}% del total</div>
             </div>
             <div class="stat-card">
-                <h3>❌ Sin "{meta['nombre_busqueda']}"</h3>
+                <h3>❌ Sin "{meta['palabra_buscada']}"</h3>
                 <div class="number">{resumen['archivos_sin_palabra']}</div>
                 <div>{resumen['porcentaje_sin_palabra']}% del total</div>
             </div>
@@ -555,7 +531,7 @@ class BuscadorPalabrasClave:
         </div>
 
         <div class="chart-container">
-            <h2>Distribución de Archivos por Presencia de "{meta['nombre_busqueda']}"</h2>
+            <h2>Distribución de Archivos por Presencia de "{meta['palabra_buscada']}"</h2>
             <div class="chart-wrapper">
                 <canvas id="presenciaChart"></canvas>
             </div>
@@ -578,10 +554,10 @@ class BuscadorPalabrasClave:
                     Todos ({meta['total_archivos']})
                 </button>
                 <button class="filter-tab" onclick="filtrarTabla('con')">
-                    Con "{meta['nombre_busqueda']}" ({resumen['archivos_con_palabra']})
+                    Con "{meta['palabra_buscada']}" ({resumen['archivos_con_palabra']})
                 </button>
                 <button class="filter-tab" onclick="filtrarTabla('sin')">
-                    Sin "{meta['nombre_busqueda']}" ({resumen['archivos_sin_palabra']})
+                    Sin "{meta['palabra_buscada']}" ({resumen['archivos_sin_palabra']})
                 </button>
             </div>
 
@@ -621,13 +597,11 @@ class BuscadorPalabrasClave:
             # Agregar contextos
             if archivo['contextos']:
                 for i, ctx in enumerate(archivo['contextos'], 1):
-                    # Crear patrón para resaltar cualquier palabra clave
-                    patron_resaltado = '|'.join([re.escape(p) for p in meta['palabras_buscadas']])
+                    # Resaltar la palabra buscada
                     texto_resaltado = re.sub(
-                        rf'\b({patron_resaltado})\b',
+                        rf'\b({re.escape(meta["palabra_buscada"])})\b',
                         r'<strong>\1</strong>',
-                        ctx['texto'],
-                        flags=re.IGNORECASE
+                        ctx['texto']
                     )
                     html_content += f"""
                                 <div class="contexto-item">
@@ -678,7 +652,7 @@ class BuscadorPalabrasClave:
             <strong>📂 Directorio analizado:</strong> {meta['directorio']}<br>
             <strong>📅 Fecha de análisis:</strong> {meta['fecha_analisis']}<br>
             <strong>📝 Total palabras procesadas:</strong> {meta['total_palabras']:,}<br>
-            <strong>🔍 Palabras buscadas:</strong> {', '.join(meta['palabras_buscadas'])} (insensible a mayúsculas/minúsculas)
+            <strong>🔍 Palabra buscada:</strong> "{meta['palabra_buscada']}" (búsqueda EXACTA, sensible a mayúsculas)
         </div>
 
         <footer>
@@ -696,7 +670,7 @@ class BuscadorPalabrasClave:
         new Chart(ctx1, {{
             type: 'pie',
             data: {{
-                labels: ['Con "{meta['nombre_busqueda']}"', 'Sin "{meta['nombre_busqueda']}"'],
+                labels: ['Con "{meta['palabra_buscada']}"', 'Sin "{meta['palabra_buscada']}"'],
                 datasets: [{{
                     data: [{resumen['archivos_con_palabra']}, {resumen['archivos_sin_palabra']}],
                     backgroundColor: ['#10b981', '#ef4444'],
@@ -737,7 +711,7 @@ class BuscadorPalabrasClave:
             data: {{
                 labels: {json.dumps(top_labels)},
                 datasets: [{{
-                    label: 'Menciones de "{meta['nombre_busqueda']}"',
+                    label: 'Menciones de "{meta['palabra_buscada']}"',
                     data: {json.dumps(top_valores)},
                     backgroundColor: '#667eea',
                     borderRadius: 8
@@ -833,7 +807,7 @@ class BuscadorPalabrasClave:
 
 def main():
     """
-    Ejecuta el análisis completo de palabras clave
+    Ejecuta el análisis completo de palabra clave
 
     Uso:
         python3 buscador_palabras_clave.py /ruta/a/tus/archivos/txt
@@ -845,8 +819,8 @@ def main():
         print("  python3 buscador_palabras_clave.py /ruta/a/tus/archivos/txt")
         print("\nEjemplo:")
         print("  python3 buscador_palabras_clave.py ~/Desktop/MisRevistas")
-        print("\n⚠️  IMPORTANTE: No olvides modificar las palabras clave en el archivo")
-        print("   Edita las líneas 25-30 del script para cambiar las palabras a buscar")
+        print("\n⚠️  IMPORTANTE: No olvides modificar la palabra clave en el archivo")
+        print("   Edita la línea 31 del script para cambiar la palabra a buscar")
         sys.exit(1)
 
     directorio_base = sys.argv[1]
@@ -860,14 +834,13 @@ def main():
         print(f"❌ ERROR: La ruta no es un directorio: {directorio_base}")
         sys.exit(1)
 
-    print("🔍 BUSCADOR DE PALABRAS CLAVE EN CORPUS TEXTUAL")
+    print("🔍 BUSCADOR DE PALABRA CLAVE EN CORPUS TEXTUAL")
     print("="*80)
     print(f"📂 Directorio: {directorio_base}")
-    print(f"🔎 Palabras clave: {', '.join(PALABRAS_CLAVE)}")
-    print(f"📝 Nombre de búsqueda: {NOMBRE_BUSQUEDA}\n")
+    print(f"🔎 Palabra clave: \"{PALABRA_CLAVE}\" (búsqueda EXACTA)\n")
 
     # Inicializar buscador
-    buscador = BuscadorPalabrasClave(directorio_base, PALABRAS_CLAVE, NOMBRE_BUSQUEDA)
+    buscador = BuscadorPalabrasClave(directorio_base, PALABRA_CLAVE)
 
     # Ejecutar análisis
     resultados = buscador.analizar_directorio()
@@ -882,8 +855,8 @@ def main():
     print("="*80)
     resumen = resultados['resumen_general']
     print(f"📄 Total archivos: {resultados['metadata']['total_archivos']}")
-    print(f"✅ Archivos con '{NOMBRE_BUSQUEDA}': {resumen['archivos_con_palabra']} ({resumen['porcentaje_con_palabra']}%)")
-    print(f"❌ Archivos sin '{NOMBRE_BUSQUEDA}': {resumen['archivos_sin_palabra']} ({resumen['porcentaje_sin_palabra']}%)")
+    print(f"✅ Archivos con '\"{PALABRA_CLAVE}\"': {resumen['archivos_con_palabra']} ({resumen['porcentaje_con_palabra']}%)")
+    print(f"❌ Archivos sin '\"{PALABRA_CLAVE}\"': {resumen['archivos_sin_palabra']} ({resumen['porcentaje_sin_palabra']}%)")
     print(f"📊 Total menciones: {resumen['total_menciones']}")
     print(f"📈 Frecuencia: {resumen['frecuencia_por_millon_palabras']} menciones por millón de palabras")
     print(f"\n📁 Archivos generados:")
