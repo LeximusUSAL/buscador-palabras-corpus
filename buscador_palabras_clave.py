@@ -25,10 +25,11 @@ from datetime import datetime
 
 # INSTRUCCIONES:
 # 1. Reemplaza "ejemplo" con la palabra EXACTA que quieras buscar
-# 2. El script buscará EXACTAMENTE esa palabra (sensible a mayúsculas)
+# 2. El script buscará esa palabra en cualquier combinación de mayúsculas/minúsculas
+#    Ejemplo: "Falla" encontrará "Falla", "falla", "FALLA", pero NO "fallará"
 # 3. Solo se permite UNA palabra clave a la vez
 
-PALABRA_CLAVE = "Ejemplo"  # ← Cambia esto por tu palabra clave EXACTA
+PALABRA_CLAVE = "Ejemplo"  # ← Cambia esto por tu palabra clave
 
 
 # ==========================================================================
@@ -42,7 +43,7 @@ class BuscadorPalabrasClave:
 
         Args:
             base_directory (str): Ruta al directorio con archivos TXT
-            palabra_clave (str): Palabra EXACTA a buscar (sensible a mayúsculas)
+            palabra_clave (str): Palabra a buscar (no sensible a mayúsculas)
         """
         self.base_directory = base_directory
         self.palabra_clave = palabra_clave
@@ -50,9 +51,10 @@ class BuscadorPalabrasClave:
         self.total_archivos = 0
         self.total_palabras = 0
 
-        # Crear patrón regex para la palabra exacta
+        # Crear patrón regex para la palabra exacta (case-insensitive)
         # \b = límite de palabra (busca palabras completas, no dentro de otras)
-        self.patron = r'\b' + re.escape(palabra_clave) + r'\b'
+        # re.IGNORECASE = busca en cualquier combinación de mayúsculas/minúsculas
+        self.patron = re.compile(r'\b' + re.escape(palabra_clave) + r'\b', re.IGNORECASE)
 
     def buscar_en_texto(self, contenido):
         """
@@ -72,8 +74,8 @@ class BuscadorPalabrasClave:
             'contextos': []
         }
 
-        # Buscar el patrón (sensible a mayúsculas)
-        matches = list(re.finditer(self.patron, contenido))
+        # Buscar el patrón (no sensible a mayúsculas)
+        matches = list(self.patron.finditer(contenido))
 
         for match in matches:
             palabra_encontrada = match.group(0)
@@ -504,7 +506,7 @@ class BuscadorPalabrasClave:
         <p class="subtitle">Proyecto LexiMus - Universidad de Salamanca</p>
 
         <div class="palabras-buscadas">
-            <strong>🔎 Palabra buscada:</strong> "{meta['palabra_buscada']}" (búsqueda EXACTA)
+            <strong>🔎 Palabra buscada:</strong> "{meta['palabra_buscada']}" (búsqueda de palabra completa, no sensible a mayúsculas)
         </div>
 
         <div class="stats-grid">
@@ -597,11 +599,12 @@ class BuscadorPalabrasClave:
             # Agregar contextos
             if archivo['contextos']:
                 for i, ctx in enumerate(archivo['contextos'], 1):
-                    # Resaltar la palabra buscada
+                    # Resaltar la palabra buscada (case-insensitive)
                     texto_resaltado = re.sub(
                         rf'\b({re.escape(meta["palabra_buscada"])})\b',
                         r'<strong>\1</strong>',
-                        ctx['texto']
+                        ctx['texto'],
+                        flags=re.IGNORECASE
                     )
                     html_content += f"""
                                 <div class="contexto-item">
@@ -652,7 +655,7 @@ class BuscadorPalabrasClave:
             <strong>📂 Directorio analizado:</strong> {meta['directorio']}<br>
             <strong>📅 Fecha de análisis:</strong> {meta['fecha_analisis']}<br>
             <strong>📝 Total palabras procesadas:</strong> {meta['total_palabras']:,}<br>
-            <strong>🔍 Palabra buscada:</strong> "{meta['palabra_buscada']}" (búsqueda EXACTA, sensible a mayúsculas)
+            <strong>🔍 Palabra buscada:</strong> "{meta['palabra_buscada']}" (búsqueda de palabra completa, no sensible a mayúsculas)
         </div>
 
         <footer>
@@ -837,7 +840,7 @@ def main():
     print("🔍 BUSCADOR DE PALABRA CLAVE EN CORPUS TEXTUAL")
     print("="*80)
     print(f"📂 Directorio: {directorio_base}")
-    print(f"🔎 Palabra clave: \"{PALABRA_CLAVE}\" (búsqueda EXACTA)\n")
+    print(f"🔎 Palabra clave: \"{PALABRA_CLAVE}\" (búsqueda de palabra completa, no sensible a mayúsculas)\n")
 
     # Inicializar buscador
     buscador = BuscadorPalabrasClave(directorio_base, PALABRA_CLAVE)
