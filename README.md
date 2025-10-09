@@ -9,7 +9,7 @@ Herramienta sencilla para buscar **una palabra específica** en **corpus masivos
 Este programa te permite:
 
 ✅ **Buscar UNA palabra EXACTA** en cientos o miles de archivos de texto
-✅ **Búsqueda sensible a mayúsculas** (distingue "Falla" de "falla")
+✅ **Búsqueda no sensible a mayúsculas** (encuentra "Falla", "falla", "FALLA")
 ✅ **Contar cuántas veces aparece** la palabra en cada archivo
 ✅ **Generar estadísticas** automáticas (porcentajes, frecuencias, etc.)
 ✅ **Crear una página web interactiva** con gráficos y tablas
@@ -17,8 +17,8 @@ Este programa te permite:
 
 **Características importantes:**
 - ⚠️ **Solo busca UNA palabra a la vez** (no variantes ni plurales)
-- ⚠️ **Sensible a mayúsculas**: "Mozart" ≠ "mozart"
-- ✅ **Busca palabras completas**: "Falla" NO coincidirá con "fallaba"
+- ✅ **No sensible a mayúsculas**: "Mozart" = "mozart" = "MOZART"
+- ✅ **Busca palabras completas**: "Falla" NO coincidirá con "fallaba" ni "fallará"
 
 **Ejemplo de uso:**
 - Buscar "Falla" en 500 revistas musicales
@@ -66,32 +66,32 @@ cd buscador-palabras-corpus
 1. Abre el archivo `buscador_palabras_clave.py` con un editor de texto
    (puedes usar el Bloc de notas, TextEdit, Notepad++, etc.)
 
-2. Busca la línea 31 que dice:
+2. Busca la línea 32 que dice:
 
 ```python
-PALABRA_CLAVE = "Ejemplo"  # ← Cambia esto por tu palabra clave EXACTA
+PALABRA_CLAVE = "Ejemplo"  # ← Cambia esto por tu palabra clave
 ```
 
-3. **Reemplaza** "Ejemplo" con la palabra EXACTA que quieres buscar:
+3. **Reemplaza** "Ejemplo" con la palabra que quieres buscar:
 
-**Ejemplo 1: Buscar "Falla" (con mayúscula)**
+**Ejemplo 1: Buscar "Falla" (encontrará "Falla", "falla", "FALLA")**
 ```python
 PALABRA_CLAVE = "Falla"
 ```
 
-**Ejemplo 2: Buscar "feminismo" (sin mayúscula)**
+**Ejemplo 2: Buscar "feminismo" (encontrará "feminismo", "Feminismo", "FEMINISMO")**
 ```python
 PALABRA_CLAVE = "feminismo"
 ```
 
-**Ejemplo 3: Buscar "Mozart"**
+**Ejemplo 3: Buscar "Mozart" (encontrará "Mozart", "mozart", "MOZART")**
 ```python
 PALABRA_CLAVE = "Mozart"
 ```
 
 **⚠️ IMPORTANTE:**
 - La palabra debe ir **entrecomillada**
-- Es **sensible a mayúsculas**: "Falla" ≠ "falla"
+- **No es sensible a mayúsculas**: "Falla" encontrará "falla", "FALLA", etc.
 - Solo **una palabra** a la vez (sin comas ni corchetes)
 - NO dejes la palabra vacía: `""` causará errores
 
@@ -212,21 +212,25 @@ python3 -m pip install --upgrade pip
 
 ## 💡 Consejos
 
-1. **Sensibilidad a mayúsculas**: Si quieres buscar tanto "Falla" como "falla", debes ejecutar el script **dos veces** con cada variante
+1. **Mayúsculas y minúsculas**: No importa cómo escribas la palabra, el script encontrará todas las variantes
+   - Escribir "Falla" encontrará: "Falla", "falla", "FALLA", "FaLLa", etc.
+   - Escribir "mozart" encontrará: "Mozart", "mozart", "MOZART", etc.
 
 2. **Palabras compuestas**: Escribe exactamente como aparecen en tus textos
    ```python
    PALABRA_CLAVE = "avant-garde"  # Con guion
    ```
 
-3. **Apellidos**: Usa mayúscula inicial para nombres propios
+3. **Apellidos**: Puedes usar mayúscula o minúscula, el resultado es el mismo
    ```python
-   PALABRA_CLAVE = "Beethoven"  # NO "beethoven"
+   PALABRA_CLAVE = "Beethoven"  # Igual que "beethoven"
    ```
 
-4. **Busca palabras completas**: "arte" NO coincidirá con "artefacto"
+4. **Busca palabras completas**: "arte" NO coincidirá con "artefacto" ni "artero"
 
-5. **Para buscar variantes**: Ejecuta el script múltiples veces cambiando la palabra cada vez
+5. **Para buscar variantes morfológicas**: Debes ejecutar el script múltiples veces
+   - "arte" NO encuentra "artes" (plural)
+   - "feminismo" NO encuentra "feminista" (variante)
 
 ---
 
