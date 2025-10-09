@@ -23,8 +23,7 @@ Este programa te permite:
 **Ejemplo de uso:**
 - Buscar "Falla" en 500 revistas musicales
 - Buscar "feminismo" en corpus de prensa histórica
-- Buscar "COVID-19" en documentos científicos
-- Buscar "Mozart" en críticas musicales
+- Buscar "Cuarteto" en críticas musicales
 
 ---
 
@@ -240,8 +239,6 @@ Este programa fue creado para el proyecto **LexiMus: Léxico y Ontología de la 
 
 - ✅ Análisis de presencia/ausencia de compositores en revistas musicales
 - ✅ Estudio de frecuencia de términos musicales en prensa histórica
-- ✅ Investigación de sesgo de género en crítica musical
-- ✅ Análisis de diversidad cultural en publicaciones especializadas
 
 ---
 
