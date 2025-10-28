@@ -235,16 +235,30 @@ python3 -m pip install --upgrade pip
 
 ## 📚 Casos de uso académicos
 
-Este programa fue creado para el proyecto **LexiMus: Léxico y Ontología de la Música en Español. PID PID2022-139589NB-C33 ** (Universidad de Salamanca) y se ha usado para:
+Este proyecto fue desarrollado como parte de:
 
-- ✅ Análisis de presencia/ausencia de compositores en revistas musicales
-- ✅ Estudio de frecuencia de términos musicales en prensa histórica
+**PID ID2025/280 LOS SOPORTES EFÍMEROS EN EL AULA UNIVERSITARIA**
+coordinado por el Dr. Santiago Ruiz Torres- UNIVERSIDAD DE SALAMANCA
+
+**Grupo de transferencia del conocimiento MUSLYME**
+Música, Lenguaje y Medios de Comunicación- UNIVERSIDAD DE SALAMANCA
+
+**LexiMus: Léxico y ontología de la música en español**
+PID2022-139589NB-C33 UNIVERSIDAD DE SALAMANCA
+
+Instituciones participantes:
+- Universidad de Salamanca
+- Instituto Complutense de Ciencias Musicales
+- Universidad de La Rioja
 
 ---
 
 ## 📝 Licencia
 
-MIT License - Uso libre para fines académicos y comerciales
+MIT License - Uso libre para fines académicos, pero no olvides citarnos
+
+Propuesta de citación:
+LeximusUSAL. (2025). Buscador-plabra-corpus- [Repositorio GitHub]. GitHub. https://github.com/LeximusUSAL/buscador-palabras-corpus
 
 ---
 
