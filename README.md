@@ -1,4 +1,4 @@
-# 🔍 Buscador de Palabra Clave en Corpus Textual
+LeximusUSAL/buscador-palabras-corpus# 🔍 Buscador de Palabra Clave en Corpus Textual
 
 Herramienta sencilla para buscar **una palabra específica** en **corpus masivos de texto**. Genera estadísticas, gráficos interactivos y análisis de frecuencia automáticamente.
 
@@ -52,7 +52,7 @@ Para usar este programa necesitas:
 ### Opción 2: Con Git (si lo tienes instalado)
 
 ```bash
-git clone https://github.com/mariamusical/buscador-palabras-corpus.git
+git clone git clone git@github.com:LeximusUSAL/buscador-palabras-corpus
 cd buscador-palabras-corpus
 ```
 
